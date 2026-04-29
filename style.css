@@ -1,203 +1,32 @@
-:root {
-  --red: #8b1116;
-  --deep-red: #6f0d11;
-  --gold: #d8a328;
-  --cream: #fff7e5;
-  --paper: #fffaf0;
-  --ink: #251617;
-  --muted: #705a55;
-  --line: rgba(139, 17, 22, 0.16);
-  --shadow: 0 14px 35px rgba(59, 18, 11, 0.13);
-}
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
 body {
+  font-family: Arial, sans-serif;
   margin: 0;
-  color: var(--ink);
-  font-family: ui-serif, Georgia, "Times New Roman", serif;
-  background:
-    radial-gradient(circle at top left, rgba(216, 163, 40, 0.22), transparent 34rem),
-    linear-gradient(180deg, var(--cream), #fffdf7 38%, #fff8ec);
+  padding: 20px;
+  background: #fffaf5;
 }
-.hero {
-  padding: 22px 14px 16px;
-  background: linear-gradient(135deg, var(--deep-red), var(--red));
-  border-bottom: 5px solid var(--gold);
-}
-.brand-card {
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 18px 14px;
+
+.header {
   text-align: center;
-  background: rgba(255, 250, 240, 0.97);
-  border-radius: 24px;
-  border: 1px solid rgba(216, 163, 40, 0.5);
-  box-shadow: var(--shadow);
 }
+
 .logo {
-  max-width: min(350px, 92%);
-  height: auto;
-  display: block;
-  margin: 0 auto 8px;
+  width: 180px;
 }
+
 h1 {
-  margin: 6px 0 2px;
-  color: var(--red);
-  font-size: clamp(1.8rem, 6vw, 3rem);
-  letter-spacing: 0.02em;
+  color: #8B0000;
 }
-.subline {
-  margin: 0 0 10px;
-  color: var(--gold);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 0.82rem;
+
+.note {
+  color: #666;
 }
-.address, .tax-note, .footer { color: var(--muted); }
-.address { margin: 8px 0 4px; }
-.phone {
-  color: var(--red);
-  font-weight: 800;
-  text-decoration: none;
+
+.menu-item {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
 }
-.tax-note {
-  margin: 10px auto 0;
-  max-width: 680px;
-  font-size: 0.9rem;
-}
-.wrap {
-  width: min(1080px, 100%);
-  margin: 0 auto;
-  padding: 16px 14px 36px;
-}
-.controls {
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  padding: 14px 0 10px;
-  background: linear-gradient(180deg, #fffaf0 82%, rgba(255,250,240,0));
-}
-.search-wrap { margin-bottom: 10px; }
-#searchInput {
-  width: 100%;
-  padding: 14px 16px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  font-size: 1rem;
-  background: white;
-  color: var(--ink);
-  outline: none;
-  box-shadow: 0 6px 18px rgba(59, 18, 11, 0.08);
-}
-#searchInput:focus { border-color: var(--gold); }
-.tabs {
-  display: flex;
-  gap: 9px;
-  overflow-x: auto;
-  padding: 4px 2px 8px;
-  scrollbar-width: thin;
-}
-.tab {
-  border: 1px solid var(--line);
-  background: white;
-  color: var(--red);
-  border-radius: 999px;
-  padding: 10px 14px;
-  font-weight: 800;
-  white-space: nowrap;
-  cursor: pointer;
-}
-.tab.active {
-  background: var(--red);
-  color: white;
-  border-color: var(--red);
-}
-.status {
-  text-align: center;
-  color: var(--muted);
-  padding: 16px;
-}
-.category {
-  margin: 18px 0 26px;
-  scroll-margin-top: 126px;
-}
-.category-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--red);
-  font-size: 1.45rem;
-  margin: 0 0 12px;
-}
-.category-title::after {
-  content: "";
-  height: 1px;
-  flex: 1;
-  background: linear-gradient(90deg, var(--gold), transparent);
-}
-.items {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
-  gap: 12px;
-}
-.item-card {
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 14px;
-  box-shadow: 0 8px 22px rgba(59, 18, 11, 0.06);
-}
-.item-top {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px;
-  align-items: start;
-}
-.item-name {
-  margin: 0;
-  font-size: 1.08rem;
-  line-height: 1.25;
-}
+
 .price {
-  color: var(--red);
-  font-weight: 900;
-  font-size: 1.06rem;
-  white-space: nowrap;
-}
-.desc {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 0.94rem;
-  line-height: 1.4;
-}
-.badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
-}
-.badge {
-  border-radius: 999px;
-  padding: 4px 8px;
-  font-size: 0.75rem;
-  font-weight: 800;
-  background: var(--cream);
-  border: 1px solid rgba(216, 163, 40, 0.45);
-  color: var(--red);
-}
-.badge.veg { color: #176d2e; }
-.badge.nonveg { color: #9b111e; }
-.footer {
-  text-align: center;
-  padding: 18px;
-  border-top: 1px solid var(--line);
-  font-size: 0.9rem;
-}
-.hidden { display: none !important; }
-@media (max-width: 620px) {
-  .hero { padding: 14px 10px 12px; }
-  .brand-card { border-radius: 18px; }
-  .items { grid-template-columns: 1fr; }
-  .category-title { font-size: 1.25rem; }
+  color: #8B0000;
+  font-weight: bold;
 }
