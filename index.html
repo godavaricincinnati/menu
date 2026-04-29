@@ -2,22 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Godavari Cincinnati Menu</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <header class="header">
-    <img src="logo.jpeg" alt="Godavari Logo" class="logo">
+    <img src="logo.jpeg" alt="Godavari Cincinnati Logo" class="logo" />
+
     <h1>Godavari Cincinnati</h1>
-    <p>5947 Deerfield Blvd #101, Mason, OH 45040</p>
-    <p>(513) 770-0444</p>
+
+    <p class="address">5947 Deerfield Blvd #101, Mason, OH 45040</p>
+    <p class="phone">(513) 770-0444</p>
     <p class="note">Prices shown before tax</p>
   </header>
 
   <main>
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Search menu..." />
+    </div>
+
     <div id="menu-container"></div>
   </main>
+
+  <footer class="footer">
+    <div class="separator">❦</div>
+    <p>Thank you for dining with Godavari Cincinnati</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
