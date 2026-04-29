@@ -1,40 +1,23 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#8b1116" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Godavari Cincinnati Menu</title>
-  <link rel="preconnect" href="https://docs.google.com" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="hero">
-    <div class="brand-card">
-      <img src="assets/godavari-logo.jpeg" alt="Godavari USA Canada" class="logo" />
-      <h1>Godavari Cincinnati</h1>
-      <p class="subline">Authentic South Indian Flavors</p>
-      <p class="address">5947 Deerfield Blvd #101, Mason, OH 45040</p>
-      <p><a href="tel:+15137700444" class="phone">(513) 770-0444</a></p>
-      <p class="tax-note">Prices shown before tax. Menu items and prices are subject to change.</p>
-    </div>
+  <header class="header">
+    <img src="logo.jpeg" alt="Godavari Logo" class="logo">
+    <h1>Godavari Cincinnati</h1>
+    <p>5947 Deerfield Blvd #101, Mason, OH 45040</p>
+    <p>(513) 770-0444</p>
+    <p class="note">Prices shown before tax</p>
   </header>
 
-  <main class="wrap">
-    <section class="controls" aria-label="Menu controls">
-      <div class="search-wrap">
-        <input id="searchInput" type="search" placeholder="Search menu items..." autocomplete="off" />
-      </div>
-      <div id="categoryTabs" class="tabs" aria-label="Menu categories"></div>
-    </section>
-
-    <section id="status" class="status">Loading menu...</section>
-    <section id="menuContainer" class="menu"></section>
+  <main>
+    <div id="menu-container"></div>
   </main>
-
-  <footer class="footer">
-    <p>Godavari Cincinnati · Dine-in Menu</p>
-  </footer>
 
   <script src="script.js"></script>
 </body>
