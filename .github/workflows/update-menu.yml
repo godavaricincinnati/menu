@@ -30,7 +30,7 @@ jobs:
           python -m playwright install chromium
 
       - name: Scrape Clover menu
-        run: python scrape_menu.py        # fixed filename
+        run: python scraper.py        # fixed filename
 
       - name: Verify menu file exists     # safety net only
         run: |
