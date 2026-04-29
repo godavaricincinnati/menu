@@ -3,7 +3,7 @@ name: Update Clover Menu
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "0 */3 * * *"
 
 permissions:
   contents: write
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -29,11 +29,28 @@ jobs:
         run: |
           python scraper.py
 
-       - name: Commit updated menu
+      - name: Verify menu file exists
+        run: |
+          if [ ! -f menu.csv ]; then
+            echo "menu.csv not found"
+            exit 1
+          fi
+
+      - name: Verify menu file is not empty
+        run: |
+          if [ ! -s menu.csv ]; then
+            echo "menu.csv is empty"
+            exit 1
+          fi
+
+      - name: Commit updated menu
         if: success()
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+
           git add menu.csv
-          git commit -m "Auto-update menu from Clover" || echo "No changes to commit"
+
+          git diff --cached --quiet || git commit -m "Auto-update menu from Clover"
+
           git push
