@@ -2,80 +2,96 @@ const menuContainer = document.getElementById("menu-container");
 const searchInput = document.getElementById("search");
 
 fetch("menu.csv")
-.then(response => response.text())
-.then(data => {
-const rows = data.split("\n").slice(1);
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("menu.csv not found");
+    }
+    return response.text();
+  })
+  .then(data => {
+    const rows = data.trim().split("\n").slice(1);
+    const grouped = {};
 
-```
-const grouped = {};
+    rows.forEach(row => {
+      const cols = row.split(",");
 
-rows.forEach(row => {
-  const cols = row.split(",");
+      if (cols.length >= 5 && cols[4].trim().toUpperCase() !== "FALSE") {
+        const category = cols[0]?.trim() || "Menu";
+        const name = cols[1]?.trim() || "";
+        const desc = cols[2]?.trim() || "";
+        const price = cols[3]?.trim() || "";
 
-  if (cols.length >= 5 && cols[4].trim() !== "FALSE") {
-    const category = cols[0].trim();
-    const item = {
-      name: cols[1],
-      desc: cols[2],
-      price: cols[3]
-    };
+        if (!name) return;
 
-    if (!grouped[category]) grouped[category] = [];
-    grouped[category].push(item);
-  }
-});
+        if (!grouped[category]) grouped[category] = [];
 
-renderMenu(grouped);
+        grouped[category].push({
+          name,
+          desc,
+          price
+        });
+      }
+    });
 
-searchInput.addEventListener("input", function () {
-  const keyword = this.value.toLowerCase();
+    renderMenu(grouped);
 
-  const filtered = {};
+    searchInput.addEventListener("input", function () {
+      const keyword = this.value.toLowerCase();
+      const filtered = {};
 
-  Object.keys(grouped).forEach(category => {
-    const items = grouped[category].filter(item =>
-      item.name.toLowerCase().includes(keyword) ||
-      item.desc.toLowerCase().includes(keyword)
-    );
+      Object.keys(grouped).forEach(category => {
+        const items = grouped[category].filter(item =>
+          item.name.toLowerCase().includes(keyword) ||
+          item.desc.toLowerCase().includes(keyword)
+        );
 
-    if (items.length) filtered[category] = items;
+        if (items.length) filtered[category] = items;
+      });
+
+      renderMenu(filtered);
+    });
+  })
+  .catch(error => {
+    menuContainer.innerHTML = `
+      <p style="text-align:center; color:#8B0000; font-weight:bold;">
+        Menu file not found. Please upload menu.csv to the main/root folder.
+      </p>
+    `;
   });
 
-  renderMenu(filtered);
-});
-```
-
-});
-
 function renderMenu(grouped) {
-menuContainer.innerHTML = "";
+  menuContainer.innerHTML = "";
 
-Object.keys(grouped).forEach(category => {
-const section = document.createElement("section");
+  if (Object.keys(grouped).length === 0) {
+    menuContainer.innerHTML = `
+      <p style="text-align:center;">No menu items found.</p>
+    `;
+    return;
+  }
 
-```
-section.innerHTML = `
-  <div class="separator">❦</div>
-  <h2>${category}</h2>
-`;
+  Object.keys(grouped).forEach(category => {
+    const section = document.createElement("section");
 
-grouped[category].forEach(item => {
-  const div = document.createElement("div");
-  div.className = "menu-item";
+    section.innerHTML = `
+      <div class="separator">❦</div>
+      <h2>${category}</h2>
+    `;
 
-  div.innerHTML = `
-    <div class="item-top">
-      <h3>${item.name}</h3>
-      <span class="price">$${item.price}</span>
-    </div>
-    <p>${item.desc}</p>
-  `;
+    grouped[category].forEach(item => {
+      const div = document.createElement("div");
+      div.className = "menu-item";
 
-  section.appendChild(div);
-});
+      div.innerHTML = `
+        <div class="item-top">
+          <h3>${item.name}</h3>
+          <span class="price">$${item.price}</span>
+        </div>
+        <p>${item.desc}</p>
+      `;
 
-menuContainer.appendChild(section);
-```
+      section.appendChild(div);
+    });
 
-});
+    menuContainer.appendChild(section);
+  });
 }
