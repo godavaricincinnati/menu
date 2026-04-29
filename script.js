@@ -11,24 +11,24 @@ fetch("menu.csv")
     return response.text();
   })
   .then(data => {
-    const rows = data.trim().split("\n").slice(1);
+    const rows = parseCSV(data);
+    const headers = rows.shift();
+
     const grouped = {};
 
-    rows.forEach(row => {
-      const cols = row.split(",");
+    rows.forEach(cols => {
+      if (cols.length < 5) return;
 
-      if (cols.length >= 5 && cols[4].trim().toUpperCase() !== "FALSE") {
-        const category = cols[0]?.trim() || "Menu";
-        const name = cols[1]?.trim() || "";
-        const desc = cols[2]?.trim() || "";
-        const price = cols[3]?.trim() || "";
+      const category = clean(cols[0]) || "Menu";
+      const name = clean(cols[1]);
+      const desc = clean(cols[2]);
+      const price = clean(cols[3]);
+      const available = clean(cols[4]).toUpperCase();
 
-        if (!name) return;
+      if (!name || available === "FALSE") return;
 
-        if (!grouped[category]) grouped[category] = [];
-
-        grouped[category].push({ name, desc, price });
-      }
+      if (!grouped[category]) grouped[category] = [];
+      grouped[category].push({ name, desc, price });
     });
 
     fullMenu = grouped;
@@ -46,15 +46,17 @@ fetch("menu.csv")
     `;
   });
 
+function clean(value) {
+  return String(value || "").trim();
+}
+
 function renderTabs(categories) {
   categoryTabs.innerHTML = "";
 
-  const allButton = createTabButton("All");
-  categoryTabs.appendChild(allButton);
+  categoryTabs.appendChild(createTabButton("All"));
 
   categories.forEach(category => {
-    const button = createTabButton(category);
-    categoryTabs.appendChild(button);
+    categoryTabs.appendChild(createTabButton(category));
   });
 }
 
@@ -76,7 +78,7 @@ function createTabButton(category) {
       renderMenu({ [category]: fullMenu[category] });
     }
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.querySelector(".menu-page").scrollIntoView({ behavior: "smooth" });
   });
 
   return button;
@@ -84,6 +86,7 @@ function createTabButton(category) {
 
 function handleSearch() {
   const keyword = searchInput.value.toLowerCase();
+
   const source =
     activeCategory === "All"
       ? fullMenu
@@ -113,6 +116,7 @@ function renderMenu(grouped) {
 
   Object.keys(grouped).forEach(category => {
     const section = document.createElement("section");
+    section.className = "category-section";
 
     section.innerHTML = `
       <div class="separator">❦</div>
@@ -128,7 +132,7 @@ function renderMenu(grouped) {
           <h3>${item.name}</h3>
           <span class="price">$${item.price}</span>
         </div>
-        <p>${item.desc}</p>
+        ${item.desc ? `<p>${item.desc}</p>` : ""}
       `;
 
       section.appendChild(div);
@@ -136,4 +140,42 @@ function renderMenu(grouped) {
 
     menuContainer.appendChild(section);
   });
+}
+
+function parseCSV(text) {
+  const rows = [];
+  let row = [];
+  let value = "";
+  let insideQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const next = text[i + 1];
+
+    if (char === '"' && insideQuotes && next === '"') {
+      value += '"';
+      i++;
+    } else if (char === '"') {
+      insideQuotes = !insideQuotes;
+    } else if (char === "," && !insideQuotes) {
+      row.push(value);
+      value = "";
+    } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+      if (value || row.length) {
+        row.push(value);
+        rows.push(row);
+        row = [];
+        value = "";
+      }
+    } else {
+      value += char;
+    }
+  }
+
+  if (value || row.length) {
+    row.push(value);
+    rows.push(row);
+  }
+
+  return rows;
 }
