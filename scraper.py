@@ -1,8 +1,7 @@
 import csv
 import re
 import sys
-import requests
-from bs4 import BeautifulSoup
+from playwright.sync_api import sync_playwright
 
 CLOVER_URL = "https://godavari-cincinnati-mason-4.cloveronline.com/menu/all"
 OUTPUT_FILE = "menu.csv"
@@ -12,45 +11,44 @@ MIN_ITEMS_REQUIRED = 20
 def clean(text):
     return re.sub(r"\s+", " ", text or "").strip()
 
-def split_item_price(text):
-    match = re.search(r"\$(\d+(?:\.\d{2})?)", text)
+def parse_item(line):
+    match = re.search(r"\$(\d+(?:\.\d{2})?)", line)
     if not match:
-        return "", ""
+        return None, None
 
     price = match.group(1)
-    name = clean(text[:match.start()])
+    name = clean(line[:match.start()])
+    name = re.sub(r"^\d+\.\s*", "", name).strip()
     return name, price
 
 def main():
-    response = requests.get(
-        CLOVER_URL,
-        timeout=30,
-        headers={
-            "User-Agent": "Mozilla/5.0"
-        }
-    )
-    response.raise_for_status()
-
-    soup = BeautifulSoup(response.text, "html.parser")
-    text = soup.get_text("\n")
-
     rows = []
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        page.goto(CLOVER_URL, wait_until="networkidle", timeout=60000)
+        page.wait_for_timeout(5000)
+
+        text = page.inner_text("body")
+        browser.close()
+
     current_category = "Menu"
 
-    for line in text.splitlines():
-        line = clean(line)
+    for raw_line in text.splitlines():
+        line = clean(raw_line)
 
         if not line:
             continue
 
-        # Category guess
-        if "$" not in line and len(line) > 3 and len(line) < 60:
-            current_category = line
+        if "$" not in line and len(line) > 3 and len(line) < 70:
+            upper_ratio = sum(1 for c in line if c.isupper()) / max(len(line), 1)
+            if upper_ratio > 0.45:
+                current_category = line
             continue
 
-        # Item with price
         if "$" in line:
-            name, price = split_item_price(line)
+            name, price = parse_item(line)
 
             if name and price:
                 rows.append({
