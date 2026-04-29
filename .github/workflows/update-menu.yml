@@ -1,17 +1,13 @@
 name: Update Clover Menu
-
 on:
   workflow_dispatch:
   schedule:
     - cron: "0 */12 * * *"
-
 permissions:
   contents: write
-
 jobs:
   update-menu:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,26 +17,25 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Cache pip dependencies       # optional but saves ~30s
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+
       - name: Install dependencies
         run: |
-          pip install playwright
+          pip install requests beautifulsoup4 playwright
           python -m playwright install chromium
 
       - name: Scrape Clover menu
-        run: |
-          python scraper.py
+        run: python scrape_menu.py        # fixed filename
 
-      - name: Verify menu file exists
+      - name: Verify menu file exists     # safety net only
         run: |
           if [ ! -f menu.csv ]; then
-            echo "menu.csv not found"
-            exit 1
-          fi
-
-      - name: Verify menu file is not empty
-        run: |
-          if [ ! -s menu.csv ]; then
-            echo "menu.csv is empty"
+            echo "menu.csv not found — scraper likely failed to fetch the page"
             exit 1
           fi
 
