@@ -1,8 +1,6 @@
 name: Update Clover Menu
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 */12 * * *"
 permissions:
   contents: write
 jobs:
